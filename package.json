@@ -1,6 +1,6 @@
 {
     "name": "agentkeepalive-ntlm",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "Missing keepalive http.Agent with NTLM Support(per user)",
     "main": "index.js",
     "browser": "browser.js",
