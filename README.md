@@ -35,6 +35,7 @@ The main motivation for this fork from `agentkeepalive` was to support user spec
 For NTLM to work, the TCP connection has to be authorized for a user. When we use the base 'agentkeepalive',
 sockets are authorized using a combination of the `host` + `port`. eg `yahoo.com:443`. However if multiple users
 are trying to access a NTLM enabled site, the socket connections were getting mixed up between users.
+***Changed the implementation to include 'host+port+cookieName' while assigning sockets***
 
 Another issue that was a problem for NTLM was that the socket pool was defaulted to 100 or Infinity. Since NTLM works
 on the principal of the same user connecting over a authorized socket, we should reuse the same socket per URL for a user. That means at a given time, for a `host:port:user` combination, there should only be 1 socket alive.
