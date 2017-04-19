@@ -27,16 +27,18 @@ The Node.js's missing `keep alive` `http.Agent`. Support `http` and `https`. Wit
 
 ## What's different from original `agentkeepalive`?
 
-- takes in a new config parameter 'cookieName' to uniquely identify a usersession
+- takes in a new config parameter 'cookieName' to uniquely identify a usersession. The cookieName
+defined has to be present in req.headers. This should ideally be a usersession cookie or can be any cookieName that
+uniquely identifies a user.
 
 The main motivation for this fork from `agentkeepalive` was to support user specific NTLM sessions.
 For NTLM to work, the TCP connection has to be authorized for a user. When we use the base 'agentkeepalive',
 sockets are authorized using a combination of the `host` + `port`. eg `yahoo.com:443`. However if multiple users
-are trying to access a NTLM enabled site, the socket connections we getting mixed up between users.
+are trying to access a NTLM enabled site, the socket connections were getting mixed up between users.
 
 Another issue that was a problem for NTLM was that the socket pool was defaulted to 100 or Infinity. Since NTLM works
-on the principal of the same user connecting over a authorized socket, we have to reuse the same socket per URL for a user.
-e.g use/reuse 1 socket for `yahoo.com:433:user_1` and another socket for `yahoo.com:433:user_2`.
+on the principal of the same user connecting over a authorized socket, we should reuse the same socket per URL for a user. That means at a given time, for a `host:port:user` combination, there should only be 1 socket alive.
+e.g create/reuse 1 socket for `yahoo.com:433:user_1` and create/reuse another socket for `gmail.com:433:user_1`.
 
 ## Install
 
@@ -65,7 +67,7 @@ $ npm install agentkeepalive-ntlm --save
   * `maxFreeSockets` {Number} Maximum number of sockets to leave open
     in a free state. Only relevant if `keepAlive` is set to `true`.
     Default = `256`.
-  * `cookieName` {string} The name of a cookie in the request header that
+  * `cookieName` {string} The name of a cookie in the http request header that
      clearly identifies a unique user session. Defaults to ''.
 
 ## Usage
